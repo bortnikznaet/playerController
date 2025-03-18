@@ -156,7 +156,7 @@ public class PlayerController {
 
     @Test(priority = 7, description = "Positive Test: with valid player ID ")
     @Feature("Players")
-    @Description("")
+    @Description("Test verifies that API allows get full information a player")
     public void testGetPlayerByIdPositive() {
         logAndStep("Sending POST request to /player/get with valid player ID");
         Response response = given()
@@ -170,7 +170,7 @@ public class PlayerController {
 
     @Test(priority = 8, description = "Negative Test: Sending POST with invalid player ID")
     @Feature("Players")
-    @Description("")
+    @Description("Test verifies that API returns an error when  a non-existing player")
     public void testGetPlayerByIdNegative() {
         logAndStep("Sending POST request to /player/get with invalid player ID");
         Response response = given()
@@ -184,9 +184,8 @@ public class PlayerController {
 
     @Test(priority = 9, description = "Positive Test: Update information players with role Supervisor ")
     @Feature("Players")
-    @Description("")
     public void testUpdateInfoPositive() {
-        logAndStep("Sending POST request to /player/get with valid player ID");
+        logAndStep("Sending PATCH request to update/user/1 for update information supervisor ");
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body("{\"age\": 999,\n" +
@@ -203,9 +202,8 @@ public class PlayerController {
 
     @Test(priority = 10, description = "Negative Test: Update information players with role User ")
     @Feature("Players")
-    @Description("")
     public void testUpdateInfoNegative() {
-        logAndStep("Sending POST request to /player/get with valid player ID");
+        logAndStep("Sending PATCH request to update/user/1 for update information user ");
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body("{\"age\": 666,\n" +
