@@ -30,7 +30,8 @@ public class PlayerController {
     private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
     private static String BASE_URL;
     private static int THREAD_COUNT;
-    public List<Long> listIdUser;
+    public List<Long> listIdPlayer;
+    public String listLoginPlayer;
 
     @BeforeClass
     public void setup() {
@@ -57,7 +58,7 @@ public class PlayerController {
     public void getAllPlayers() {
         logAndStep("Sending GET request to /getAllPlayers");
         Response response = getAllPlayersRequest();
-        listIdUser = response.jsonPath().getList("players.id", Long.class);
+        listIdPlayer = response.jsonPath().getList("players.id", Long.class);
         logAndStep("Validating that response body contains a list of players");
         assertFalse(response.getBody().asString().isEmpty(), "Player list is empty");
     }
@@ -92,12 +93,12 @@ public class PlayerController {
         Response response = given()
                 .queryParam("age", "30")
                 .queryParam("gender", "male")
-                .queryParam("login", "TestUser")
+                .queryParam("login", "admin")
                 .queryParam("password", "password123")
                 .queryParam("role", "user")
-                .queryParam("screenName", "TestUserScreen")
+                .queryParam("screenName", "Admin")
                 .when()
-                .get("/player/create/admin")
+                .get("/player/create/Generated_login34.06.1139")
                 .then().extract().response();
         logAndStep("Validating that response status code is 200");
         assertEquals(response.getStatusCode(), 200, "Expected status code 200");
@@ -127,7 +128,7 @@ public class PlayerController {
     @Description("Test verifies that API allows deleting a player")
     public void testDeletePlayer() {
         logAndStep("Sending request to delete a player");
-        int playerId = listIdUser.get(listIdUser.size() - 1).intValue();
+        int playerId = listIdPlayer.get(listIdPlayer.size() - 1).intValue();
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body("{\"playerId\": "+playerId+"}")
@@ -143,7 +144,7 @@ public class PlayerController {
     @Description("Test verifies that API returns an error when deleting a non-existing player")
     public void testDeleteNonExistingPlayer() {
         logAndStep("Sending request to delete a non-existing player");
-        int playerId = listIdUser.size() > 0 ? listIdUser.get(listIdUser.size() - 2).intValue() : -1;
+        int playerId = listIdPlayer.size() > 0 ? listIdPlayer.get(listIdPlayer.size() - 2).intValue() : -1;
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body("{\"playerId\": "+ playerId+"}")
@@ -154,7 +155,7 @@ public class PlayerController {
         assertEquals(response.getStatusCode(), 403, "Expected status code 403");
     }
 
-    @Test(priority = 7, description = "Positive Test: with valid player ID ")
+    @Test(priority = 7, description = "Positive Test: Get info By PlayerId with valid player ID ")
     @Feature("Players")
     @Description("Test verifies that API allows get full information a player")
     public void testGetPlayerByIdPositive() {
@@ -168,7 +169,7 @@ public class PlayerController {
         response.then().statusCode(200);
     }
 
-    @Test(priority = 8, description = "Negative Test: Sending POST with invalid player ID")
+    @Test(priority = 8, description = "Negative Test: Sending POST  with invalid player ID")
     @Feature("Players")
     @Description("Test verifies that API returns an error when  a non-existing player")
     public void testGetPlayerByIdNegative() {
@@ -193,27 +194,27 @@ public class PlayerController {
                         "  \"login\": \"mazzy\",\n" +
                         "  \"password\": \"12345678Abc\",\n" +
                         "  \"role\": \"supervisor\",\n" +
-                        "  \"screenName\": \"Green Mazzy Monster\"}")
+                        "  \"screenName\": \"GreenMazzyMonster\"}")
                 .when()
-                .patch("update/supervisor/1");
+                .patch("player/update/Generated_login34.06.1139/"+listIdPlayer.get(listIdPlayer.size() - 1).intValue());
         logAndStep("Validating that response status code is 200 and player exists");
         response.then().statusCode(200);
     }
 
-    @Test(priority = 10, description = "Negative Test: Update information players with role User ")
+    @Test(priority = 10, description = "Negative Test: Update information players invalid id Player ")
     @Feature("Players")
     public void testUpdateInfoNegative() {
-        logAndStep("Sending PATCH request to update/user/1 for update information user ");
+        logAndStep("Sending PATCH request to update/player/id for update information Player ");
         Response response = given()
                 .contentType(ContentType.JSON)
-                .body("{\"age\": 666,\n" +
+                .body("{\"age\": 55,\n" +
                         "  \"gender\": \"male\",\n" +
                         "  \"login\": \"madam\",\n" +
                         "  \"password\": \"@12345678Abc\",\n" +
                         "  \"role\": \"user\",\n" +
                         "  \"screenName\": \"LadyIce\"}")
                 .when()
-                .patch("update/user/1");
+                .patch("player/update/Generated_login34.06.1139/-12");
         logAndStep("Validating that response status code is 403 and player exists");
         response.then().statusCode(403);
     }
